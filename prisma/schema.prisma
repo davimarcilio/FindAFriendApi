@@ -10,6 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 model Org {
   id             String @id @default(uuid())
   name           String
@@ -30,6 +34,7 @@ model Pet {
   city                 String
   age                  String
   energy               Int
+  environment          String  
   size                 String
   independence         String
   type                 String

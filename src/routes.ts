@@ -64,6 +64,7 @@ export async function appRoutes(app: FastifyInstance) {
           energy: z.string(),
           independence: z.string(),
           type: z.string(),
+          environment: z.string(),
           adoptionRequirements: z.string(),
         })
 
@@ -73,6 +74,7 @@ export async function appRoutes(app: FastifyInstance) {
           description,
           energy,
           independence,
+          environment,
           name,
           size,
           type,
@@ -92,7 +94,7 @@ export async function appRoutes(app: FastifyInstance) {
           })
         }
 
-        const parsedRequirement = JSON.parse(adoptionRequirements)
+        const parsedRequirement: string[] = JSON.parse(adoptionRequirements)
 
         if (parsedRequirement.length <= 0) {
           return reply
@@ -112,8 +114,6 @@ export async function appRoutes(app: FastifyInstance) {
 
         const { city } = await getGeoLocationByCEP(findOrg.cep)
 
-        console.log(titleize(city))
-
         const pet = await prismaClient.pet.create({
           data: {
             age,
@@ -122,6 +122,7 @@ export async function appRoutes(app: FastifyInstance) {
             energy: Number(energy),
             independence,
             name,
+            environment,
             photo: photo!,
             size,
             type,
@@ -149,6 +150,8 @@ export async function appRoutes(app: FastifyInstance) {
 
         return reply.status(201).send()
       } catch (error) {
+        console.log(error)
+
         return reply.status(400).send({
           error: 'Não foi possível cadastrar o Pet',
         })
